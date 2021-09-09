@@ -6,6 +6,7 @@ User = get_user_model()
 
 
 class Review(models.Model):
+    """ Модель отзыва """
     text = models.TextField()
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
     author = models.ForeignKey(
@@ -14,12 +15,17 @@ class Review(models.Model):
             MaxValueValidator(10),
             MinValueValidator(1)
         ])
+    # Расскоментить поле title после добавления класса Title
+    # title = models.ForeignKey(
+    #     Title, on_delete=models.CASCADE, related_name='reviews')
     
     def __str__(self):
+        """ Строковое представление объекта в поле text """
         return self.text
 
 
 class Comment(models.Model):
+    """ Модель коммента """
     text = models.TextField()
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
     author = models.ForeignKey(
@@ -28,5 +34,6 @@ class Comment(models.Model):
         Review, on_delete=models.CASCADE, related_name='comments')
     
     def __str__(self):
+        """ Строковое представление объекта в поле text """
         return self.text
 
