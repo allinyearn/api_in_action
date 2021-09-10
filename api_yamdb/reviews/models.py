@@ -25,14 +25,14 @@ class Title(models.Model):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name='category'
+        related_name='title'
     )
     genre = models.ForeignKey(
         Genre,
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name='genre'
+        related_name='title'
     )
 
     def __str__(self):
