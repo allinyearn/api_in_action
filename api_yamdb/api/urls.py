@@ -1,15 +1,11 @@
 from django.urls import include, path
 from rest_framework import routers
-from .views import give_token, signup #UserViewSet
-#
-# router = routers.DefaultRouter()
-# router.register(r'users', UsersViewSet, basename='users')
+from .views import give_token, signup
 
-# свои эндпоинты к АПИ добавляем сюда
-# или роутерами или прямым маршрутом по аналогии)
+router = routers.DefaultRouter()
 
 urlpatterns = [
     path('v1/auth/token/', give_token),
     path('v1/auth/signup/', signup),
-    # path('v1/', include(router.urls)),
+    path('v1/', include(router.urls)),
 ]
