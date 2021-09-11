@@ -3,38 +3,23 @@ from rest_framework import viewsets
 
 from .serializers import CommentSerializer, ReviewSerializer
 from .permissions import AuthorOrReadOnly
-from reviews.models import Comment, Review
-
-# Раскомментить после добавления модели Title и удалить существующее представление для отзыва
-
-# class ReviewViewSet(viewsets.ModelViewSet):
-#     """Представление для отзывов к произведению.
-
-#     Возваращает список всех отзывов, отзыв по id, 
-#     может добавить обновить и удалить отзыв по id
-#     """
-#     serializer_class = ReviewSerializer
-
-#     def get_queryset(self):
-#         """Получаем набор отзывов относящихся к определенному произведению"""
-#         title_id = self.kwargs.get('title_id')
-#         title = get_object_or_404(Title, id=title_id)
-#         queryset = title.rewiews.all()
-#         return queryset
-
-#     def perform_create(self, serializer):
-#         serializer.save(author=self.request.user)
+from reviews.models import Comment, Review, Title
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """Представление для отзывов к произведению.
 
     Возваращает список всех отзывов, отзыв по id, 
-    может добавить, обновить и удалить отзыв по id
+    может добавить обновить и удалить отзыв по id
     """
-    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = (AuthorOrReadOnly,)
+
+    def get_queryset(self):
+        """Получаем набор отзывов относящихся к определенному произведению"""
+        title_id = self.kwargs.get('title_id')
+        title = get_object_or_404(Title, id=title_id)
+        queryset = title.rewiews.all()
+        return queryset
 
     def perform_create(self, serializer):
         """При создании нового отзыва, автор = пользователь создающий отзыв"""

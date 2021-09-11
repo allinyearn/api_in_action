@@ -15,9 +15,8 @@ class Review(models.Model):
             MaxValueValidator(10),
             MinValueValidator(1)
         ])
-    # Расскоментить поле title после добавления класса Title
-    # title = models.ForeignKey(
-    #     Title, on_delete=models.CASCADE, related_name='reviews')
+    title = models.ForeignKey(
+        Title, on_delete=models.CASCADE, related_name='reviews')
     
     def __str__(self):
         """ Строковое представление объекта в поле text """
