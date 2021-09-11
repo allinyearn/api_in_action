@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
 class UserRoles:
     """ Клас определяющий роли пользователей. ПО ТЗ 4 роли. Суперпользователя
 будем вынимать из БД. """
@@ -23,6 +22,7 @@ class User(AbstractUser):
     bio = models.TextField(
         'Биография',
         blank=True,
+        null=True,
     )
     role = models.TextField(
         'Роль',
