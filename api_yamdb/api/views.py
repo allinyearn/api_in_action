@@ -36,7 +36,7 @@ ban_names = (
 def signup(request):
     """Функция регистрации нового пользователя
     отправляет confirmation_code на указанный email
-    Запрещает использовать имя пользователя из списка ban_names"""
+    Запрещает использовать имя пользователя из кортежа ban_names"""
 
     serializer_data = SignUpSerializer(data=request.data)
     serializer_data.is_valid(raise_exception=True)
