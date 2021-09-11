@@ -5,6 +5,8 @@ from users.models import User
 
 
 class SignUpSerializer(serializers.ModelSerializer):
+    """Сериализатор проверяет на уникальность имя пользователя и email"""
+
     username = serializers.CharField(
         required=True, validators=[UniqueValidator(
                 queryset=User.objects.all(),

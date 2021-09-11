@@ -34,6 +34,10 @@ ban_names = (
 
 @api_view(['POST'])
 def signup(request):
+    """Функция регистрации нового пользователя
+    отправляет confirmation_code на указанный email
+    Запрещает использовать имя пользователя из списка ban_names"""
+
     serializer_data = SignUpSerializer(data=request.data)
     serializer_data.is_valid(raise_exception=True)
     email = serializer_data.data.get('email')
@@ -61,6 +65,9 @@ def signup(request):
 
 @api_view(['POST'])
 def give_token(request):
+    """Выдает токен указаному пользователю, который прислал confirmation_code
+    Вылсанный ранее на почту"""
+
     serializer_data = ConfirmCodeSerializer(data=request.data)
     serializer_data.is_valid(raise_exception=True)
     confirmation_code = serializer_data.data.get('confirmation_code')
@@ -70,7 +77,6 @@ def give_token(request):
         user.is_active=True
         user.save()
         token = AccessToken.for_user(user)
-        print(token)
         return Response({
             "token": f"{token}"
         }, status=status.HTTP_200_OK)
@@ -78,6 +84,8 @@ def give_token(request):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """Изменение данных пользователям им самим"""
+
     queryset = User.objects.all()
     serializer_class = SignUpSerializer
 
