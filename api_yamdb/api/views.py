@@ -50,7 +50,7 @@ def signup(request):
     confirmation_code = default_token_generator.make_token(new_user)
     send_mail(
         'Youre registration is Done',
-        f'Ваш код подтверждения {confirmation_code}',
+        f'Ваш код подтверждения (confirmation_code) {confirmation_code}',
         settings.DEFAULT_FROM_EMAIL,
         [email],
     )
