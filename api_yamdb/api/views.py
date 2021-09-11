@@ -1,25 +1,21 @@
-
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 # from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, filters #, mixins
+from rest_framework import viewsets, status, filters  # , mixins
 from rest_framework.decorators import api_view, action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from reviews.models import Comment, Review, Title, Category, Genre, Title
+from reviews.models import Review, Category, Genre, Title
 from users.models import User
-from .permissions import AuthorOrReadOnly # , IsAdmin
+from .permissions import AuthorOrReadOnly  # , IsAdmin
 from .serializers import (
 #     UserSerializer,
       ConfirmCodeSerializer,
       SignUpSerializer,
-#     EmailSerializer,
-#     UserForAdminSerializer,
       CommentSerializer,
       ReviewSerializer,
       GenreSerializer,
@@ -33,6 +29,7 @@ ban_names = (
     'Me',
     'Voldemort'
 )
+
 
 @api_view(['POST'])
 def signup(request):
@@ -65,6 +62,7 @@ def signup(request):
         "username": username
     })
 
+
 @api_view(['POST'])
 def give_token(request):
     """Выдает токен указаному пользователю, который прислал confirmation_code
@@ -76,7 +74,7 @@ def give_token(request):
     username = serializer_data.data.get('username')
     user = get_object_or_404(User, username=username)
     if default_token_generator.check_token(user, confirmation_code):
-        user.is_active=True
+        user.is_active = True
         user.save()
         token = AccessToken.for_user(user)
         return Response({
@@ -109,7 +107,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         """Получаем набор отзывов относящихся к определенному произведению"""
         title_id = self.kwargs.get('title_id')
         title = get_object_or_404(Title, id=title_id)
-        queryset = title.rewiews.all()
+        queryset = title.reviews.all()
         return queryset
 
     def perform_create(self, serializer):
@@ -147,6 +145,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter, )
     search_fields = ('name', )
+    lookup_field = 'slug'
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -159,5 +158,4 @@ class GenreViewSet(viewsets.ModelViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    filter_backends = (DjangoFilterBackend, )
     filterset_fields = ('category', 'genre', 'name', 'year')

@@ -34,8 +34,6 @@ class ConfirmCodeSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('username', 'confirmation_code',)
         model = User
-=======
-
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -63,14 +61,14 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('name')
+        fields = ('name', 'slug')
 
 
 class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
-        fields = ('name')
+        fields = ('name',)
 
 
 class TitleSerializer(serializers.ModelSerializer):

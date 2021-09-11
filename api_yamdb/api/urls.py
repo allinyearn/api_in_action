@@ -8,25 +8,21 @@ from .views import (
 
 
 router = routers.DefaultRouter()
-router.register(r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet)
+router.register(
+    r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet, basename='review'
+)
 router.register(
     r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
-    CommentViewSet,
-    basename='comments')
-router.register(
-    'categories',
-    CategoryViewSet,
-    basename='categories'
+    CommentViewSet, basename='comments'
 )
 router.register(
-    'genres',
-    GenreViewSet,
-    basename='genres'
+    'categories', CategoryViewSet, basename='categories'
 )
 router.register(
-    'titles',
-    TitleViewSet,
-    basename='titles'
+    'genres', GenreViewSet, basename='genres'
+)
+router.register(
+    'titles', TitleViewSet, basename='titles'
 )
 
 urlpatterns = [
