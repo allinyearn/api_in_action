@@ -25,14 +25,24 @@ from .serializers import (
 #     TitlesSerializer,
 #     TitleSerializerCreateUpdate
 )
+
+bannames = (
+    'me',
+    'Me',
+    'Voldemort'
+)
+
 @api_view(['POST'])
 def signup(request):
     serializer_data = SignUpSerializer(data=request.data)
     serializer_data.is_valid(raise_exception=True)
     email = serializer_data.data.get('email')
     username = serializer_data.data.get('username')
-    if username == 'me':
-        return Response('Неверное имя пользователя', status=status.HTTP_400_BAD_REQUEST)
+    if username in bannames:
+        return Response(
+            'Выберите другое имя пользователя!',
+            status=status.HTTP_400_BAD_REQUEST
+        )
     new_user, create = User.objects.get_or_create(
         username=username,
         email=email,
@@ -60,8 +70,9 @@ def give_token(request):
         user.is_active=True
         user.save()
         token = AccessToken.for_user(user)
+        print(token)
         return Response({
-            "token": token
+            "token": f"{token}"
         }, status=status.HTTP_200_OK)
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -72,6 +83,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get', 'patch'],
             permission_classes=[IsAuthenticated])
-    def me(self, request):
+    def youself(self, request):
         pass
 

@@ -5,7 +5,6 @@ class UserRoles:
     """ Клас определяющий роли пользователей. ПО ТЗ 4 роли. Суперпользователя
 будем вынимать из БД. """
 
-    GUEST = 'guest'  # роль гостя скорее всего не пригодится, пока оставлю
     USER = 'user'
     MODERATOR = 'moderator'
     ADMIN = 'admin'
@@ -28,5 +27,5 @@ class User(AbstractUser):
         'Роль',
         max_length=24,
         choices=UserRoles.choices,
-        default=UserRoles.GUEST,  # пока роль гостя по дефолту
+        default=UserRoles.USER,
     )
