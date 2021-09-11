@@ -26,7 +26,7 @@ from .serializers import (
 #     TitleSerializerCreateUpdate
 )
 
-bannames = (
+ban_names = (
     'me',
     'Me',
     'Voldemort'
@@ -38,7 +38,7 @@ def signup(request):
     serializer_data.is_valid(raise_exception=True)
     email = serializer_data.data.get('email')
     username = serializer_data.data.get('username')
-    if username in bannames:
+    if username in ban_names:
         return Response(
             'Выберите другое имя пользователя!',
             status=status.HTTP_400_BAD_REQUEST
