@@ -57,6 +57,7 @@ def signup(request):
         settings.DEFAULT_FROM_EMAIL,
         [email],
     )
+    print(confirmation_code)
     return Response({
         "email": email,
         "username": username
@@ -102,6 +103,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     может добавить обновить и удалить отзыв по id
     """
     serializer_class = ReviewSerializer
+    permission_classes = (AuthorOrReadOnly,)
 
     def get_queryset(self):
         """Получаем набор отзывов относящихся к определенному произведению"""
@@ -112,7 +114,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """При создании нового отзыва, автор = пользователь создающий отзыв"""
-        serializer.save(author=self.request.user)
+        title = get_object_or_404(Title, id=self.kwargs['title_id'])
+        serializer.save(author=self.request.user, title=title)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -158,4 +161,5 @@ class GenreViewSet(viewsets.ModelViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+    permission_classes = (AuthorOrReadOnly,)
     filterset_fields = ('category', 'genre', 'name', 'year')

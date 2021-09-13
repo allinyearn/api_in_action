@@ -53,7 +53,7 @@ class Review(models.Model):
         ])
     title = models.ForeignKey(
         Title, on_delete=models.CASCADE, related_name='reviews')
-    
+
     def __str__(self):
         """ Строковое представление объекта в поле text """
         return self.text
@@ -67,7 +67,7 @@ class Comment(models.Model):
         User, on_delete=models.CASCADE, related_name='comments')
     review = models.ForeignKey(
         Review, on_delete=models.CASCADE, related_name='comments')
-    
+
     def __str__(self):
         """ Строковое представление объекта в поле text """
         return self.text
