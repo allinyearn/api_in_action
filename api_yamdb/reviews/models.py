@@ -25,6 +25,7 @@ class Title(models.Model):
     """ Модель произведения """
     name = models.CharField(max_length=150)
     year = models.IntegerField()
+    description = models.TextField(max_length=500, blank=True, null=True)
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
