@@ -169,5 +169,5 @@ class TitleViewSet(viewsets.ModelViewSet):
     """ Представление для произведений """
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    permission_classes = (AllowAny, IsAdminOrReadOnly, )
+    permission_classes = (IsAdminOrReadOnly, )
     filterset_fields = ('category', 'genre', 'name', 'year')
