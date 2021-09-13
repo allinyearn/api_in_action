@@ -11,7 +11,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from reviews.models import Review, Category, Genre, Title
 from users.models import User
-from .permissions import AuthorOrReadOnly  # , IsAdmin
+from .permissions import AuthorOrReadOnly, IsAdminOrReadOnly  # , IsAdmin
 from .serializers import (
 #     UserSerializer,
       ConfirmCodeSerializer,
@@ -141,21 +141,27 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
+    """ Представление для категорий """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (IsAdminOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('name', )
     lookup_field = 'slug'
 
 
 class GenreViewSet(viewsets.ModelViewSet):
+    """ Представление для жанров """
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    permission_classes = (IsAdminOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('=name', )
 
 
 class TitleViewSet(viewsets.ModelViewSet):
+    """ Представление для произведений """
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+    permission_classes = (IsAdminOrReadOnly, )
     filterset_fields = ('category', 'genre', 'name', 'year')
