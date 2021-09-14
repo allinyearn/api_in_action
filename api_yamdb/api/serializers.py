@@ -89,12 +89,8 @@ class TitleSerializer(serializers.ModelSerializer):
         queryset=Genre.objects.all(),
         many=True
     )
-    rating = serializers.SerializerMethodField()
+    reviews = RatingSerializer
 
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year','rating', 'category', 'genre')
-
-    def get_rating(self, obj):
-        """Данный метод получает среднее значение рейтинга для всех отзывов"""
-        return int(obj.reviews.aggregate(Avg('score'))['score__avg'])
+        fields = ('id', 'name', 'year', 'reviews', 'category', 'genre')
