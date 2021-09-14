@@ -1,6 +1,6 @@
-from rest_framework import serializers
-from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 from django.db.models import Avg
+from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 from reviews.models import Category, Genre, Title, Comment, Review
 from users.models import User
 
@@ -80,21 +80,16 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    category = serializers.SlugRelatedField(
-        slug_field='slug',
-        queryset=Category.objects.all()
-    )
-    genre = serializers.SlugRelatedField(
-        slug_field='slug',
-        queryset=Genre.objects.all(),
-        many=True
-    )
+    category = CategorySerializer(read_only=True)
+    genre = GenreSerializer(many=True, read_only=True)
     rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year','rating', 'category', 'genre')
+        fields = ('id', 'name', 'year', 'rating', 'genre', 'category')
 
     def get_rating(self, obj):
         """Данный метод получает среднее значение рейтинга для всех отзывов"""
-        return int(obj.reviews.aggregate(Avg('score'))['score__avg'])
+        if obj.rating.aggregate(Avg('score'))['score__avg']:
+            return int(obj.rating.aggregate(Avg('score'))['score__avg'])
+        return 0
