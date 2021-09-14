@@ -5,7 +5,6 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, filters, mixins
 from rest_framework.decorators import api_view, action
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
@@ -21,8 +20,8 @@ from .serializers import (
       ReviewSerializer,
       GenreSerializer,
       CategorySerializer,
+      TitleCreateSerializer,
       TitleSerializer,
-#     TitleSerializerCreateUpdate
 )
 
 ban_names = (
@@ -151,7 +150,6 @@ class CategoryViewSet(mixins.CreateModelMixin,
     """ Представление для категорий """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    pagination_class = PageNumberPagination
     permission_classes = (AllowAny, IsAdminOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('=name', )
@@ -165,7 +163,6 @@ class GenreViewSet(mixins.CreateModelMixin,
     """ Представление для жанров """
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    pagination_class = PageNumberPagination
     permission_classes = (AllowAny, IsAdminOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('=name', )
@@ -174,7 +171,10 @@ class GenreViewSet(mixins.CreateModelMixin,
 class TitleViewSet(viewsets.ModelViewSet):
     """ Представление для произведений """
     queryset = Title.objects.all()
-    serializer_class = TitleSerializer
-    permission_classes = (AuthorOrReadOnly,)
-    pagination_class = PageNumberPagination
+    permission_classes = (AllowAny, AuthorOrReadOnly,)
     filterset_fields = ('category', 'genre', 'name', 'year')
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'partial_update', 'destroy']:
+            return TitleCreateSerializer
+        return TitleSerializer

@@ -37,6 +37,13 @@ class IsAdminOrReadOnly(BasePermission):
     """ Пермишен для админа на редактирование контента:
         категорий, жанров, произведений.
     """
+    def has_permission(self, request, view):
+        return (
+            request.method in SAFE_METHODS
+            or request.user.is_authenticated and
+            (request.user.role == UserRoles.ADMIN
+             or request.user.is_superuser)
+        )
 
     def has_object_permission(self, request, view, obj):
         if (

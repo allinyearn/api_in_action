@@ -86,3 +86,12 @@ class TitleSerializer(serializers.ModelSerializer):
         if obj.rating.aggregate(Avg('score'))['score__avg']:
             return int(obj.rating.aggregate(Avg('score'))['score__avg'])
         return 0
+
+
+class TitleCreateSerializer(serializers.ModelSerializer):
+    category = CategorySerializer
+    genre = GenreSerializer(many=True)
+
+    class Meta:
+        model = Title
+        fields = ('id', 'name', 'year', 'genre', 'category')
