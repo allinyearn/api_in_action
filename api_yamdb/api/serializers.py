@@ -58,13 +58,6 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('id', 'text', 'author', 'pub_date')
 
 
-class RatingSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Review
-        fields = ('score', )
-
-
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -90,6 +83,6 @@ class TitleSerializer(serializers.ModelSerializer):
 
     def get_rating(self, obj):
         """Данный метод получает среднее значение рейтинга для всех отзывов"""
-        if obj.rating.aggregate(Avg('score'))['score__avg']:
-            return int(obj.rating.aggregate(Avg('score'))['score__avg'])
+        if obj.reviews.aggregate(Avg('score'))['score__avg']:
+            return int(obj.reviews.aggregate(Avg('score'))['score__avg'])
         return 0
