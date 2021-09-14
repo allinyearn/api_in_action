@@ -83,6 +83,6 @@ class TitleSerializer(serializers.ModelSerializer):
 
     def get_rating(self, obj):
         """Данный метод получает среднее значение рейтинга для всех отзывов"""
-        if obj.reviews.aggregate(Avg('score'))['score__avg']:
-            return int(obj.reviews.aggregate(Avg('score'))['score__avg'])
+        if obj.rating.aggregate(Avg('score'))['score__avg']:
+            return int(obj.rating.aggregate(Avg('score'))['score__avg'])
         return 0
