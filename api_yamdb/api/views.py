@@ -3,15 +3,15 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 # from django.db.models import Avg
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, filters  # , mixins
+from rest_framework import viewsets, status, filters, mixins
 from rest_framework.decorators import api_view, action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
 from reviews.models import Review, Category, Genre, Title
 from users.models import User
-from .permissions import AuthorOrReadOnly  # , IsAdmin
+from .permissions import AuthorOrReadOnly, IsAdminOrReadOnly  # , IsAdmin
 from .serializers import (
 #     UserSerializer,
       ConfirmCodeSerializer,
@@ -98,7 +98,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     """Представление для отзывов к произведению.
 
-    Возваращает список всех отзывов, отзыв по id, 
+    Возваращает список всех отзывов, отзыв по id,
     может добавить обновить и удалить отзыв по id
     """
     serializer_class = ReviewSerializer
@@ -118,7 +118,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     """Представление для комментов к отзыву.
 
-    Возваращает список всех комментов к отзыву, коммент по id, 
+    Возваращает список всех комментов к отзыву, коммент по id,
     может добавить, обновить и удалить коммент по id
     """
     serializer_class = CommentSerializer
@@ -140,22 +140,34 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, review=review)
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(mixins.CreateModelMixin,
+                      mixins.ListModelMixin,
+                      mixins.DestroyModelMixin,
+                      viewsets.GenericViewSet):
+    """ Представление для категорий """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (AllowAny, IsAdminOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('name', )
     lookup_field = 'slug'
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(mixins.CreateModelMixin,
+                   mixins.ListModelMixin,
+                   mixins.DestroyModelMixin,
+                   viewsets.GenericViewSet):
+    """ Представление для жанров """
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    permission_classes = (AllowAny, IsAdminOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('=name', )
 
 
 class TitleViewSet(viewsets.ModelViewSet):
+    """ Представление для произведений """
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+    permission_classes = (IsAdminOrReadOnly, )
     filterset_fields = ('category', 'genre', 'name', 'year')

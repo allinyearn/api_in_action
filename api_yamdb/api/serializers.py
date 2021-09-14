@@ -57,6 +57,13 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('id', 'author', 'text', 'pub_date')
 
 
+class RatingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Review
+        fields = ('score', )
+
+
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -68,7 +75,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
-        fields = ('name',)
+        fields = ('name', 'slug')
 
 
 class TitleSerializer(serializers.ModelSerializer):
@@ -81,7 +88,10 @@ class TitleSerializer(serializers.ModelSerializer):
         queryset=Genre.objects.all(),
         many=True
     )
+    rating = RatingSerializer(read_only=True)
 
     class Meta:
         model = Title
-        fields = ('name', 'year', 'category', 'genre')
+        fields = (
+            'id', 'name', 'year', 'rating', 'description', 'category', 'genre'
+        )
