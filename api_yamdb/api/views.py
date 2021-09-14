@@ -11,6 +11,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from reviews.models import Review, Category, Genre, Title
 from users.models import User
+from .filters import TitleFilter
 from .permissions import AuthorOrReadOnly, IsAdminOrReadOnly  # , IsAdmin
 from .serializers import (
 #     UserSerializer,
@@ -172,6 +173,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     """ Представление для произведений """
     queryset = Title.objects.all()
     permission_classes = (AllowAny, IsAdminOrReadOnly,)
+    filterset_class = TitleFilter
     filterset_fields = ('category', 'genre', 'name', 'year')
 
     def get_serializer_class(self):

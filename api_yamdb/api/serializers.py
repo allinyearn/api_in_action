@@ -1,3 +1,5 @@
+import datetime as dt
+
 from django.db.models import Avg
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
@@ -85,7 +87,13 @@ class TitleSerializer(serializers.ModelSerializer):
         """Данный метод получает среднее значение рейтинга для всех отзывов"""
         if obj.rating.aggregate(Avg('score'))['score__avg']:
             return int(obj.rating.aggregate(Avg('score'))['score__avg'])
-        return 0
+        return None
+
+    def validate_year(self, value):
+        year = dt.datetime.today().year
+        if not value <= year:
+            raise serializers.ValidationError('Произведение из будущего')
+        return value
 
 
 class TitleCreateSerializer(serializers.ModelSerializer):
