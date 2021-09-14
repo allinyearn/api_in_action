@@ -171,7 +171,7 @@ class GenreViewSet(mixins.CreateModelMixin,
 class TitleViewSet(viewsets.ModelViewSet):
     """ Представление для произведений """
     queryset = Title.objects.all()
-    permission_classes = (AllowAny, AuthorOrReadOnly,)
+    permission_classes = (AllowAny, IsAdminOrReadOnly,)
     filterset_fields = ('category', 'genre', 'name', 'year')
 
     def get_serializer_class(self):
