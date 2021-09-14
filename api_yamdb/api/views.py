@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, filters, mixins
 from rest_framework.decorators import api_view, action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
@@ -150,6 +151,7 @@ class CategoryViewSet(mixins.CreateModelMixin,
     """ Представление для категорий """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    pagination_class = PageNumberPagination
     permission_classes = (AllowAny, IsAdminOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('=name', )
@@ -163,6 +165,7 @@ class GenreViewSet(mixins.CreateModelMixin,
     """ Представление для жанров """
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    pagination_class = PageNumberPagination
     permission_classes = (AllowAny, IsAdminOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('=name', )
@@ -173,4 +176,5 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     permission_classes = (AuthorOrReadOnly,)
+    pagination_class = PageNumberPagination
     filterset_fields = ('category', 'genre', 'name', 'year')

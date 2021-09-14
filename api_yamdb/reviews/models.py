@@ -67,7 +67,7 @@ class Review(models.Model):
             MinValueValidator(1)
         ])
     title = models.ForeignKey(
-        Title, on_delete=models.CASCADE, related_name='reviews')
+        Title, on_delete=models.CASCADE, related_name='rating')
 
     def __str__(self):
         """ Строковое представление объекта в поле text """
