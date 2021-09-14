@@ -28,8 +28,9 @@ class IsAdmin(BasePermission):
     """Пермишн только для админа."""
 
     def has_permission(self, request, view):
-        return (request.user.is_superuser
-                or request.auth and request.user.is_admin
+        return (
+                request.user.is_superuser
+                or request.auth and request.user.role == UserRoles.ADMIN
                 )
 
 
@@ -38,14 +39,21 @@ class IsAdminOrReadOnly(BasePermission):
         категорий, жанров, произведений.
     """
 
-    def has_object_permission(self, request, view, obj):
-        if (
-            request.user.is_authenticated is False
-            or request.user.role == UserRoles.USER
-            or request.user.role == UserRoles.MODERATOR
-        ):
-            return request.method in SAFE_METHODS
-        return (
-            request.user.is_superuser
-            or request.user.role == UserRoles.ADMIN
-        )
+    def has_permission(self, request, view):
+        return (request.method in SAFE_METHODS or
+                request.user.is_authenticated and
+                (request.user.role == UserRoles.ADMIN
+                 or request.user.is_superuser)
+                )
+
+    # def has_object_permission(self, request, view, obj):
+    #     if (
+    #         request.user.is_authenticated is False
+    #         or request.user.role == UserRoles.USER
+    #         or request.user.role == UserRoles.MODERATOR
+    #     ):
+    #         return request.method in SAFE_METHODS
+    #     return (
+    #         request.user.is_superuser
+    #         or request.user.role == UserRoles.ADMIN
+    #     )

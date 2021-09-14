@@ -3,7 +3,7 @@ from rest_framework import routers
 from .views import (
   give_token, signup, 
   CategoryViewSet, GenreViewSet, TitleViewSet,
-  CommentViewSet, ReviewViewSet
+  CommentViewSet, ReviewViewSet, UserViewSet
 )
 
 
@@ -20,6 +20,9 @@ router.register(
 )
 router.register(
     'genres', GenreViewSet, basename='genres'
+)
+router.register(
+    'users', UserViewSet, basename='users'
 )
 router.register(
     'titles', TitleViewSet, basename='titles'

@@ -1,20 +1,20 @@
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
-# from django.db.models import Avg
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, filters, mixins
 from rest_framework.decorators import api_view, action
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
 from reviews.models import Review, Category, Genre, Title
 from users.models import User
-from .permissions import AuthorOrReadOnly, IsAdminOrReadOnly  # , IsAdmin
+from .permissions import AuthorOrReadOnly, IsAdminOrReadOnly, IsAdmin
 from .serializers import (
-#     UserSerializer,
+      UserSerializer,
+      UserAdminSerializer,
       ConfirmCodeSerializer,
       SignUpSerializer,
       CommentSerializer,
@@ -58,7 +58,6 @@ def signup(request):
         settings.DEFAULT_FROM_EMAIL,
         [email],
     )
-    print(confirmation_code)
     return Response({
         "email": email,
         "username": username
@@ -89,12 +88,28 @@ class UserViewSet(viewsets.ModelViewSet):
     """Изменение данных пользователям им самим"""
 
     queryset = User.objects.all()
-    serializer_class = SignUpSerializer
+    serializer_class = UserAdminSerializer
+    permission_classes = (IsAdmin,)
+    lookup_field = 'username'
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('=username',)
+
 
     @action(detail=False, methods=['get', 'patch'],
             permission_classes=[IsAuthenticated])
-    def youself(self, request):
-        pass
+    def me(self, request):
+        user = request.user
+        if request.method == 'GET':
+            serializer = UserSerializer(user, many=False)
+            return Response(serializer.data)
+        if request.method == 'PATCH':
+            serializer = UserSerializer(user, partial=True, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -105,6 +120,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     serializer_class = ReviewSerializer
     permission_classes = (AuthorOrReadOnly,)
+
 
     def get_queryset(self):
         """Получаем набор отзывов относящихся к определенному произведению"""
@@ -151,8 +167,7 @@ class CategoryViewSet(mixins.CreateModelMixin,
     """ Представление для категорий """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    pagination_class = PageNumberPagination
-    permission_classes = (AllowAny, IsAdminOrReadOnly, )
+    permission_classes = (IsAdminOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('=name', )
     lookup_field = 'slug'
@@ -165,16 +180,20 @@ class GenreViewSet(mixins.CreateModelMixin,
     """ Представление для жанров """
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    pagination_class = PageNumberPagination
-    permission_classes = (AllowAny, IsAdminOrReadOnly, )
+    permission_classes = (IsAdminOrReadOnly, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('=name', )
+    lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     """ Представление для произведений """
-    queryset = Title.objects.all()
-    serializer_class = TitleSerializer
+    queryset = Title.objects.all().annotate(rating=Avg('reviews__score'))
     permission_classes = (AuthorOrReadOnly,)
-    pagination_class = PageNumberPagination
-    filterset_fields = ('category', 'genre', 'name', 'year')
+    # filterset_class = Filter  # фильтр написать отдельно
+    http_method_names = ['get', 'post', 'delete', 'patch']
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return TitleSerializer
+        # retun TitleNewSerializer # нужен серилизатор для отальных меотдов

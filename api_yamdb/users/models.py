@@ -18,7 +18,7 @@ class UserRoles:
 
 class User(AbstractUser):
     """Расширяем модель полями биография и роль"""
-
+    email = models.EmailField(blank=False, unique=True)
     bio = models.TextField(
         'Биография',
         blank=True,

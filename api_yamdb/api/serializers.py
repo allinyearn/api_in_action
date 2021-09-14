@@ -37,10 +37,35 @@ class ConfirmCodeSerializer(serializers.ModelSerializer):
         model = User
 
 
+class UserAdminSerializer(serializers.ModelSerializer):
+
+    username = serializers.CharField(
+        required=True, validators=[UniqueValidator(
+                queryset=User.objects.all(),
+        )]
+    )
+
+    class Meta:
+        fields = (
+            'username', 'email', 'role',
+            'bio', 'first_name', 'last_name',
+        )
+        model = User
+
+
+class UserSerializer(UserAdminSerializer):
+    role = serializers.CharField(read_only=True)
+
+
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         read_only=True,
         slug_field='username',
+        default=serializers.CurrentUserDefault(),
+    )
+    title = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='name',
     )
 
     class Meta:
@@ -51,7 +76,13 @@ class ReviewSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         read_only=True,
-        slug_field='username')
+        slug_field='username',
+        default=serializers.CurrentUserDefault(),
+    )
+    reviews = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='text',
+    )
 
     class Meta:
         model = Comment
@@ -72,17 +103,17 @@ class GenreSerializer(serializers.ModelSerializer):
         fields = ('name', 'slug')
 
 
-class TitleSerializer(serializers.ModelSerializer):
+class TitleSerializer(serializers.ModelSerializer):  #
     category = CategorySerializer(read_only=True)
     genre = GenreSerializer(many=True, read_only=True)
-    rating = serializers.SerializerMethodField()
+    rating = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Title
         fields = ('id', 'name', 'year', 'rating', 'genre', 'category')
 
-    def get_rating(self, obj):
-        """Данный метод получает среднее значение рейтинга для всех отзывов"""
-        if obj.reviews.aggregate(Avg('score'))['score__avg']:
-            return int(obj.reviews.aggregate(Avg('score'))['score__avg'])
-        return 0
+    # def get_rating(self, obj):
+    #     """Данный метод получает среднее значение рейтинга для всех отзывов"""
+    #     if obj.reviews.aggregate(Avg('score'))['score__avg']:
+    #         return int(obj.reviews.aggregate(Avg('score'))['score__avg'])
+    #     return 0
