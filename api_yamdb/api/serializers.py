@@ -72,7 +72,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ('id', 'text', 'author', 'score', 'pub_date')
+        fields = ('id', 'text', 'author', 'score', 'pub_date', 'title')
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -88,7 +88,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'author', 'pub_date')
+        fields = ('id', 'text', 'author', 'pub_date', 'reviews')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -105,20 +105,16 @@ class GenreSerializer(serializers.ModelSerializer):
         fields = ('name', 'slug')
 
 
-class TitleSerializer(serializers.ModelSerializer):  #
+class TitleSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     genre = GenreSerializer(many=True, read_only=True)
     rating = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year', 'rating', 'genre', 'category')
-
-    def get_rating(self, obj):
-        """Данный метод получает среднее значение рейтинга для всех отзывов"""
-        if obj.rating.aggregate(Avg('score'))['score__avg']:
-            return int(obj.rating.aggregate(Avg('score'))['score__avg'])
-        return None
+        fields = (
+            'id', 'name', 'year', 'description', 'rating', 'genre', 'category'
+        )
 
     def validate_year(self, value):
         year = dt.datetime.today().year
@@ -142,4 +138,4 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year', 'genre', 'category')
+        fields = ('id', 'name', 'year', 'description', 'genre', 'category')
