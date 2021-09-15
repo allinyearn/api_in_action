@@ -8,9 +8,9 @@ from rest_framework.decorators import api_view, action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
-
 from reviews.models import Review, Category, Genre, Title
 from users.models import User
+from .filters import TitleFilter
 from .permissions import AuthorOrReadOnly, IsAdminOrReadOnly, IsAdmin
 from .serializers import (
       UserSerializer,
@@ -21,8 +21,8 @@ from .serializers import (
       ReviewSerializer,
       GenreSerializer,
       CategorySerializer,
+      TitleCreateSerializer,
       TitleSerializer,
-#     TitleSerializerCreateUpdate
 )
 
 ban_names = (
@@ -188,12 +188,12 @@ class GenreViewSet(mixins.CreateModelMixin,
 
 class TitleViewSet(viewsets.ModelViewSet):
     """ Представление для произведений """
-    queryset = Title.objects.all().annotate(rating=Avg('reviews__score'))
-    permission_classes = (AuthorOrReadOnly,)
-    # filterset_class = Filter  # фильтр написать отдельно
-    http_method_names = ['get', 'post', 'delete', 'patch']
+    queryset = Title.objects.all()
+    permission_classes = (IsAdminOrReadOnly,)
+    filterset_class = TitleFilter
+    filterset_fields = ('category', 'genre', 'name', 'year')
 
     def get_serializer_class(self):
-        if self.request.method == 'GET':
-            return TitleSerializer
-        # retun TitleNewSerializer # нужен серилизатор для отальных меотдов
+        if self.action in ['create', 'partial_update', 'destroy']:
+            return TitleCreateSerializer
+        return TitleSerializer

@@ -1,3 +1,5 @@
+import datetime as dt
+
 from django.db.models import Avg
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
@@ -112,8 +114,32 @@ class TitleSerializer(serializers.ModelSerializer):  #
         model = Title
         fields = ('id', 'name', 'year', 'rating', 'genre', 'category')
 
-    # def get_rating(self, obj):
-    #     """Данный метод получает среднее значение рейтинга для всех отзывов"""
-    #     if obj.reviews.aggregate(Avg('score'))['score__avg']:
-    #         return int(obj.reviews.aggregate(Avg('score'))['score__avg'])
-    #     return 0
+    def get_rating(self, obj):
+        """Данный метод получает среднее значение рейтинга для всех отзывов"""
+        if obj.rating.aggregate(Avg('score'))['score__avg']:
+            return int(obj.rating.aggregate(Avg('score'))['score__avg'])
+        return None
+
+    def validate_year(self, value):
+        year = dt.datetime.today().year
+        if not value <= year:
+            raise serializers.ValidationError('Произведение из будущего')
+        return value
+
+
+class TitleCreateSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+        queryset=Category.objects.all(),
+        slug_field='slug',
+        required=False
+    )
+    genre = serializers.SlugRelatedField(
+        queryset=Genre.objects.all(),
+        slug_field='slug',
+        required=False,
+        many=True
+    )
+
+    class Meta:
+        model = Title
+        fields = ('id', 'name', 'year', 'genre', 'category')
