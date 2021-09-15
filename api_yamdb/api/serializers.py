@@ -116,12 +116,6 @@ class TitleSerializer(serializers.ModelSerializer):
             'id', 'name', 'year', 'description', 'rating', 'genre', 'category'
         )
 
-    def get_rating(self, obj):
-        """Данный метод получает среднее значение рейтинга для всех отзывов"""
-        if obj.rating.aggregate(Avg('score'))['score__avg']:
-            return int(obj.rating.aggregate(Avg('score'))['score__avg'])
-        return None
-
     def validate_year(self, value):
         year = dt.datetime.today().year
         if not value <= year:
