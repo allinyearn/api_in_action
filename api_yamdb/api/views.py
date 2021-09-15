@@ -186,7 +186,7 @@ class GenreViewSet(mixins.CreateModelMixin,
 
 class TitleViewSet(viewsets.ModelViewSet):
     """ Представление для произведений """
-    queryset = Title.objects.all()
+    queryset = Title.objects.all().annotate(rating=Avg('reviews__score'))
     permission_classes = (IsAdminOrReadOnly,)
     filterset_class = TitleFilter
     filterset_fields = ('category', 'genre', 'name', 'year')
