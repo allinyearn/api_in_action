@@ -194,6 +194,6 @@ class TitleViewSet(viewsets.ModelViewSet):
     filterset_fields = ('category', 'genre', 'name', 'year')
 
     def get_serializer_class(self):
-        if self.action in ['create', 'partial_update', 'destroy']:
-            return TitleCreateSerializer
-        return TitleSerializer
+        if self.request.method == 'GET':
+            return TitleSerializer
+        return TitleCreateSerializer
