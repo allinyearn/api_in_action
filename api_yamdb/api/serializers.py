@@ -72,7 +72,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ('id', 'text', 'author', 'score', 'pub_date')
+        fields = ('id', 'text', 'author', 'score', 'pub_date', 'title')
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -88,7 +88,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'author', 'pub_date')
+        fields = ('id', 'text', 'author', 'pub_date', 'reviews')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -112,7 +112,9 @@ class TitleSerializer(serializers.ModelSerializer):  #
 
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year', 'rating', 'genre', 'category')
+        fields = (
+            'id', 'name', 'year', 'description', 'rating', 'genre', 'category'
+        )
 
     def get_rating(self, obj):
         """Данный метод получает среднее значение рейтинга для всех отзывов"""
@@ -142,4 +144,4 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year', 'genre', 'category')
+        fields = ('id', 'name', 'year', 'description', 'genre', 'category')

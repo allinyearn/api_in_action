@@ -94,7 +94,6 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('=username',)
 
-
     @action(detail=False, methods=['get', 'patch'],
             permission_classes=[IsAuthenticated])
     def me(self, request):
@@ -120,7 +119,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """
     serializer_class = ReviewSerializer
     permission_classes = (AuthorOrReadOnly,)
-
 
     def get_queryset(self):
         """Получаем набор отзывов относящихся к определенному произведению"""
