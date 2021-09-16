@@ -60,17 +60,14 @@ $ python manage.py runserver
 ## Примеры
 
 Для формирования запросов будет использована программа `Postman`.
-- Регистрация новых пользователей
-[this signup](api_yamdb/static/pictures/readme/signup.jpg)
+- [Регистрация новых пользователей](api_yamdb/static/pictures/readme/signup.jpg)
 
-- Получение токена для аутентификации
-[this token](api_yamdb/static/pictures/readme/token.jpg)
+- [Получение токена для аутентификации](api_yamdb/static/pictures/readme/token.jpg)
 
-- Получение списка отзывов
-[this get_reviews](api_yamdb/static/pictures/readme/get_reviews.jpg)
+- [Получение списка отзывов](api_yamdb/static/pictures/readme/get_reviews.jpg)
 
-- Создание нового отзыва
-[this post_reviews](api_yamdb/static/pictures/readme/post_reviews.jpg)
+- [Создание нового отзыва](api_yamdb/static/pictures/readme/post_reviews.jpg)
+
 
 
 **Приятного использования**
