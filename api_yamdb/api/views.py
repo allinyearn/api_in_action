@@ -13,16 +13,16 @@ from users.models import User
 from .filters import TitleFilter
 from .permissions import AuthorOrReadOnly, IsAdminOrReadOnly, IsAdmin
 from .serializers import (
-      UserSerializer,
-      UserAdminSerializer,
-      ConfirmCodeSerializer,
-      SignUpSerializer,
-      CommentSerializer,
-      ReviewSerializer,
-      GenreSerializer,
-      CategorySerializer,
-      TitleCreateSerializer,
-      TitleSerializer,
+    UserSerializer,
+    UserAdminSerializer,
+    ConfirmCodeSerializer,
+    SignUpSerializer,
+    CommentSerializer,
+    ReviewSerializer,
+    GenreSerializer,
+    CategorySerializer,
+    TitleCreateSerializer,
+    TitleSerializer,
 )
 
 ban_names = (

@@ -43,7 +43,7 @@ class UserAdminSerializer(serializers.ModelSerializer):
 
     username = serializers.CharField(
         required=True, validators=[UniqueValidator(
-            queryset=User.objects.all(),
+                queryset=User.objects.all(),
         )]
     )
 

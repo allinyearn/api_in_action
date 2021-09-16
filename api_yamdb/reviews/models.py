@@ -77,6 +77,9 @@ class Review(models.Model):
             )
         ]
 
+    class Meta:
+        unique_together = ('author', 'title')
+
     def __str__(self):
         """ Строковое представление объекта в поле text """
         return self.text
