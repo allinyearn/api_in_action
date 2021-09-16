@@ -63,11 +63,19 @@ class Review(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='reviews')
     score = models.IntegerField(validators=[
-            MaxValueValidator(10),
-            MinValueValidator(1)
-        ])
+        MaxValueValidator(10),
+        MinValueValidator(1)
+    ])
     title = models.ForeignKey(
         Title, on_delete=models.CASCADE, related_name='reviews')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'title'],
+                name='unique_reviews'
+            )
+        ]
 
     def __str__(self):
         """ Строковое представление объекта в поле text """
