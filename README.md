@@ -61,16 +61,16 @@ $ python manage.py runserver
 
 Для формирования запросов будет использована программа `Postman`.
 - Регистрация новых пользователей
-![Регистрация новых пользователей](https://github.com/klo-kly/api_yamdb/tree/master/api_yamdb/static/pictures/readme/signup.jpg)
+[this signup](api_yamdb/static/pictures/readme/signup.jpg)
 
 - Получение токена для аутентификации
-![Получение токена для аутентификации](https://github.com/klo-kly/api_yamdb/tree/master/api_yamdb/static/pictures/readme/token.jpg)
+[this token](api_yamdb/static/pictures/readme/token.jpg)
 
 - Получение списка отзывов
-![Получение списка отзывов](https://github.com/klo-kly/api_yamdb/tree/master/api_yamdb/static/pictures/readme/get_reviews.jpg)
+[this get_reviews](api_yamdb/static/pictures/readme/get_reviews.jpg)
 
 - Создание нового отзыва
-![Создание нового отзыва](https://github.com/klo-kly/api_yamdb/tree/master/api_yamdb/static/pictures/readme/post_reviews.jpg)
+[this post_reviews](api_yamdb/static/pictures/readme/post_reviews.jpg)
 
 
 **Приятного использования**
