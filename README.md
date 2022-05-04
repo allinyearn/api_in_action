@@ -1,10 +1,1 @@
-
-# api_yamdb
-api_yamdb
-swwswsws
-
-wswsws
-
-sex and drugs!
-
-
+# Тестовый проект по реализации api
